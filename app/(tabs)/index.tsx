@@ -4,12 +4,12 @@ import UpcomingSubscriptionCard from "@/components/UpcomingSubcriptionCard";
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constant/data";
 import { icons } from "@/constant/icon";
 import images from "@/constant/images";
 import { formatCurrency } from "@/lib/utils";
+import { useUser } from "@clerk/expo";
 import dayjs from "dayjs";
 import { styled } from "nativewind";
 import React, { useState } from "react";
@@ -19,9 +19,15 @@ import { SafeAreaView as RNSAreaview } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSAreaview);
 
 const App = () => {
+  const { user } = useUser();
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+
+  // Get user display name
+  const displayName = user?.firstName
+    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`
+    : user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] || "User";
 
   // Define this separately to prevent remounting on every state change
   const renderHeader = (
@@ -30,7 +36,7 @@ const App = () => {
       <View className="home-header">
         <View className="home-user">
           <Image source={images.avatar} className="home-avatar" />
-          <Text className="home-user-name">{HOME_USER.name}</Text>
+          <Text className="home-user-name">{displayName}</Text>
         </View>
         <Image source={icons.add} className="home-add-icon" />
       </View>
