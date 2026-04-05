@@ -1,11 +1,11 @@
-import { Tabs } from "expo-router";
-// eslint-disable-next-line import/no-named-as-default
-import clsx from "clsx";
-import { Image, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-// import { useAuth } from '@clerk/expo';
 import { tabs } from "@/constant/data";
 import { colors, components } from "@/constant/theme";
+import { useAuth } from "@clerk/expo";
+// eslint-disable-next-line import/no-named-as-default
+import clsx from "clsx";
+import { Redirect, Tabs } from "expo-router";
+import { ActivityIndicator, Image, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const tabBar = components.tabBar;
 
@@ -19,18 +19,22 @@ const TabIcon = ({ focused, icon }: TabIconProps) => {
   );
 };
 const TabLayout = () => {
-  // const { isSignedIn, isLoaded } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const insets = useSafeAreaInsets();
 
-  // // Wait for auth to load before rendering anything
-  // if (!isLoaded) {
-  //     return null;
-  // }
+  // Wait for auth to load before rendering anything
+  if (!isLoaded) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color="#ea7a53" />
+      </View>
+    );
+  }
 
-  // // Redirect to sign-in if user is not authenticated
-  // if (!isSignedIn) {
-  //     return <Redirect href="/(auth)/sign-in" />;
-  // }
+  // Redirect to sign-in if user is not authenticated
+  if (!isSignedIn) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
 
   return (
     <Tabs
